@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Product\Validator;
+namespace App\Services\Product\Import\Validator;
 
 use App\Repositories\Product\Dto\RawProductDto;
 

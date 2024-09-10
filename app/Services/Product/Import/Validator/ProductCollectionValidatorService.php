@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Product\Validator;
+namespace App\Services\Product\Import\Validator;
 
 use App\Repositories\Product\Dto\RawProductDto;
 use App\Services\Product\Collection\ProductCollection;
@@ -14,18 +14,13 @@ class ProductCollectionValidatorService
 
     /**
      * @param \App\Services\Product\Collection\ProductCollection<RawProductDto> $collection
-     * @return bool
+     * @return \App\Services\Product\Collection\ProductCollection<RawProductDto>
      */
-    public function validateRawProductsCollection(ProductCollection $collection): bool
+    public function validateRawProductsCollection(ProductCollection $collection): ProductCollection
     {
         $this->resetErrors();
 
-        $collection->each(function (RawProductDto $rawProduct)
-        {
-            $this->validateRawProduct($rawProduct);
-        });
-
-        return !$this->hasErrors();
+        return $collection->filter(fn(RawProductDto $rawProduct) => $this->validateRawProduct($rawProduct));
     }
 
     public function messages(): Collection
@@ -39,6 +34,11 @@ class ProductCollectionValidatorService
     public function hasErrors(): bool
     {
         return !empty($this->messages);
+    }
+
+    public function getInvalidProductsCount(): int
+    {
+        return count($this->messages);
     }
 
     protected function validateRawProduct(RawProductDto $rawProduct): bool

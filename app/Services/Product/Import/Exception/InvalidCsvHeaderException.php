@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Product\Importer\Exception;
+namespace App\Services\Product\Import\Exception;
 
 use Exception;
 

@@ -2,9 +2,14 @@
 
 namespace App\Console\Commands\Product;
 
-use App\Services\Product\Importer\ProductImporterService;
-use App\Services\Product\Validator\ProductCollectionValidatorService;
-use App\Services\ProductMapperService;
+use App\Models\Product;
+use App\Repositories\Product\MockProductRepository;
+use App\Services\Product\Collection\ProductCollection;
+use App\Services\Product\Import\ProductCollectionMapperService;
+use App\Services\Product\Import\ProductLoaderService;
+use App\Services\Product\Import\Validator\ProductCollectionValidatorService;
+use App\Services\Product\Product\ProductService;
+use App\Services\Product\Product\ResultDto;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
@@ -19,7 +24,8 @@ class ImportCsvProductsCommand extends Command
     protected $signature = '
         products:import
         { --path= : Path to a csv file }
-        { --show-errors : Indicates that the command should print validation errors for each product }
+        { --strict : Stops script execution and prints errors if any were detected while processing projects. }
+        { --test : Will not insert processed & validated products into a database. }
     ';
 
     /**
@@ -27,12 +33,13 @@ class ImportCsvProductsCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Import product rows from csv to database.';
 
     public function __construct(
-        protected ProductImporterService            $importerService,
+        protected ProductLoaderService              $loaderService,
         protected ProductCollectionValidatorService $validatorService,
-        protected ProductMapperService              $mapperService
+        protected ProductCollectionMapperService    $mapperService,
+        protected ProductService                    $productService
     )
     {
         parent::__construct();
@@ -44,28 +51,116 @@ class ImportCsvProductsCommand extends Command
      */
     public function handle(): int
     {
-        if (!$path = trim($this->option('path'))) {
+        Product::truncate();
+
+        if (!$path = $this->getFilePath()) {
+            $this->error('Please provide import file path.');
+
             return self::FAILURE;
         }
 
+        if (!$rawProducts = $this->loadProducts($path)) {
+            return self::FAILURE;
+        }
+
+        if (!$validatedProducts = $this->validateProducts($rawProducts)) {
+            return self::FAILURE;
+        }
+
+        if ($this->isRunningInTestMode()) {
+            $this->useMockProductStorage();
+
+            $this->renderTestModeNotice();
+        }
+
+        $result = $this->productService->persistProducts(
+            products: $this->mapperService->mapRawInputToProductCollection($validatedProducts)
+        );
+
+        $this->renderOperationSummary(
+            inputProductsCount: $rawProducts->count(),
+            result: $result
+        );
+
+        return self::SUCCESS;
+    }
+
+    protected function validateProducts(ProductCollection $input): ProductCollection|false
+    {
+        $validatedProducts = $this->validatorService->validateRawProductsCollection($input);
+
+        if (
+            $this->validatorService->hasErrors()
+            && $this->isRunningInStrictMode()
+        ) {
+            $this->renderProductValidationErrors($this->validatorService->messages());
+
+            return false;
+        }
+
+        return $validatedProducts;
+    }
+
+    protected function loadProducts(string $path): ProductCollection|false
+    {
         try {
-            $input = $this->importerService->getRawProducts($path);
+            return $this->loaderService->loadRawProducts($path);
         } catch (Exception $e) {
             $this->error($e->getMessage());
 
-            return self::FAILURE;
+            return false;
         }
+    }
 
+    protected function getFilePath(): ?string
+    {
+        return trim($this->option('path'));
+    }
 
-        if (!$this->validatorService->validateRawProductsCollection($input)) {
-            $this->renderProductValidationErrors($this->validatorService->messages());
+    protected function isRunningInStrictMode(): bool
+    {
+        return $this->option('strict');
+    }
 
-            return self::FAILURE;
+    protected function isRunningInTestMode(): bool
+    {
+        return $this->option('test');
+    }
+
+    protected function renderTestModeNotice(): void
+    {
+        $this->info('Command running in test mode - skipped actual rows insert.');
+        $this->newLine();
+    }
+
+    protected function useMockProductStorage(): void
+    {
+        $this->productService->setStorage(
+            app(MockProductRepository::class)
+        );
+    }
+
+    protected function renderOperationSummary(
+        int       $inputProductsCount,
+        ResultDto $result
+    ): void
+    {
+        $this->info(sprintf(
+            'Total products %d, inserted %d, invalid %d, skipped %d.',
+            $inputProductsCount,
+            $result->insertedProducts->count(),
+            $this->validatorService->getInvalidProductsCount(),
+            $result->skippedProducts->count()
+        ));
+
+        $skippedCodes = $result->skippedProducts->pluck('code')->implode(', ');
+
+        if ($skippedCodes) {
+            $this->info(sprintf(
+                'Skipped codes: %s',
+                $skippedCodes
+            ));
         }
-
-        $products = $this->mapperService->mapRawInputToProductCollection($input);
-
-        return self::SUCCESS;
     }
 
     protected function renderProductValidationErrors(Collection $errors): void

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Product\Import;
 
 use App\Repositories\Product\Dto\ProductDto;
 use App\Repositories\Product\Dto\RawProductDto;
 use App\Services\Product\Collection\ProductCollection;
 
-class ProductMapperService
+class ProductCollectionMapperService
 {
     /**
      * @param \App\Services\Product\Collection\ProductCollection<RawProductDto> $rawProductCollection

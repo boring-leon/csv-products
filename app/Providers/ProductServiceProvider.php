@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
-use App\Services\Product\Importer\ProductImporterService;
+use App\Repositories\Product\ProductRepository;
+use App\Services\Product\Import\ProductLoaderService;
+use App\Services\Product\Product\Contracts\ProductStorage;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Filesystem\FilesystemManager;
@@ -16,7 +18,7 @@ class ProductServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app
-            ->when(ProductImporterService::class)
+            ->when(ProductLoaderService::class)
             ->needs(Filesystem::class)
             ->give(function (Container $app)
             {
@@ -24,6 +26,8 @@ class ProductServiceProvider extends ServiceProvider
                     $app->make('config')->get('products.disk')
                 );
             });
+
+        $this->app->bind(ProductStorage::class, ProductRepository::class);
     }
 
     /**

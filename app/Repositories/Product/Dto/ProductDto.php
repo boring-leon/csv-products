@@ -12,4 +12,17 @@ readonly class ProductDto
         public int    $gbpPrice,
         public bool   $isDiscounted
     ) {}
+
+    public function toArray(): array
+    {
+        return [
+            'strProductName' => $this->name,
+            'strProductDesc' => $this->description,
+            'strProductCode' => $this->code,
+            'decPrice' => $this->gbpPrice,
+            'intStock' => $this->stock,
+            'dtmAdded' => now(),
+            'dtmDiscontinued' => $this->isDiscounted ? now() : null,
+        ];
+    }
 }
