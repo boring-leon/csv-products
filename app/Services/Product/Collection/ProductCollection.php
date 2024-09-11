@@ -8,8 +8,9 @@ use Illuminate\Support\Collection;
 class ProductCollection extends Collection
 {
     /**
-     * This step attempts to minimise typo-related issues with identifying csv columns
-     * by transforming each header into snake_case_notation.
+     * This step attempts to minimise typo-related issues while accessing csv columns.
+     * A more robust solution would be to define supported columns as PHP enum, and use it everywhere.
+     * In general, I prefer to avoid assoc arrays and have everything typed.
      */
     public function transformHeadersToSnakeCaseNotation(): static
     {

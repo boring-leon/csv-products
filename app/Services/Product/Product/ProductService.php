@@ -19,7 +19,10 @@ class ProductService
      */
     public function persistProducts(ProductCollection $products): ResultDto
     {
-        $skippedProducts = $products->filter(fn(ProductDto $product) => !$this->shouldPersist($product));
+        $existingCodes = $this->storage->getExistingProductCodes();
+
+        $skippedProducts = $products
+            ->filter(fn(ProductDto $product) => !$this->shouldPersist($product, $existingCodes));
 
         $productsToPersist = $products->whereNotIn('code', $skippedProducts->pluck('code'));
 
@@ -31,8 +34,12 @@ class ProductService
         );
     }
 
-    protected function shouldPersist(ProductDto $product): bool
+    protected function shouldPersist(ProductDto $product, array $existingCodes): bool
     {
+        if (in_array($product->code, $existingCodes)) {
+            return false;
+        }
+
         if ($product->stock < 10 && $product->gbpPrice < 5) {
             return false;
         }

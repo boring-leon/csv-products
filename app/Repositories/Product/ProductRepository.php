@@ -19,7 +19,7 @@ class ProductRepository implements ProductStorage
     public function insertMany(ProductCollection $collection): void
     {
         $this->db->beginTransaction();
-        
+
         try {
             $collection
                 ->chunk(100)
@@ -36,5 +36,10 @@ class ProductRepository implements ProductStorage
 
             throw $e;
         }
+    }
+
+    public function getExistingProductCodes(): array
+    {
+        return Product::pluck('strProductCode')->toArray();
     }
 }

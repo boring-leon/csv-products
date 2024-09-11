@@ -7,5 +7,13 @@ use App\Services\Product\Product\Contracts\ProductStorage;
 
 class MockProductRepository implements ProductStorage
 {
+    /**
+     * @inheritDoc
+     */
     public function insertMany(ProductCollection $collection): void {}
+
+    public function getExistingProductCodes(): array
+    {
+        return [];
+    }
 }

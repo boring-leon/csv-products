@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands\Product;
 
-use App\Models\Product;
 use App\Repositories\Product\MockProductRepository;
 use App\Services\Product\Collection\ProductCollection;
 use App\Services\Product\Import\ProductCollectionMapperService;
@@ -24,8 +23,8 @@ class ImportCsvProductsCommand extends Command
     protected $signature = '
         products:import
         { --path= : Path to a csv file }
-        { --strict : Stops script execution and prints errors if any were detected while processing projects. }
-        { --test : Will not insert processed & validated products into a database. }
+        { --strict : Stops script execution and prints errors if any were detected while validating projects. }
+        { --test : Will not actually insert processed records into the database. }
     ';
 
     /**
@@ -51,10 +50,12 @@ class ImportCsvProductsCommand extends Command
      */
     public function handle(): int
     {
-        Product::truncate();
+        if ($this->isRunningInTestMode()) {
+            $this->useMockProductStorage();
+        }
 
         if (!$path = $this->getFilePath()) {
-            $this->error('Please provide import file path.');
+            $this->error('Please provide valid import file path.');
 
             return self::FAILURE;
         }
@@ -65,12 +66,6 @@ class ImportCsvProductsCommand extends Command
 
         if (!$validatedProducts = $this->validateProducts($rawProducts)) {
             return self::FAILURE;
-        }
-
-        if ($this->isRunningInTestMode()) {
-            $this->useMockProductStorage();
-
-            $this->renderTestModeNotice();
         }
 
         $result = $this->productService->persistProducts(
@@ -125,12 +120,6 @@ class ImportCsvProductsCommand extends Command
     protected function isRunningInTestMode(): bool
     {
         return $this->option('test');
-    }
-
-    protected function renderTestModeNotice(): void
-    {
-        $this->info('Command running in test mode - skipped actual rows insert.');
-        $this->newLine();
     }
 
     protected function useMockProductStorage(): void

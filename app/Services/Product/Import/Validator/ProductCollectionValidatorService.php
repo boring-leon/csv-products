@@ -10,7 +10,9 @@ class ProductCollectionValidatorService
 {
     protected array $messages = [];
 
-    public function __construct(protected ProductValidatorService $productValidatorService) {}
+    public function __construct(
+        protected ProductValidatorService $productValidatorService
+    ) {}
 
     /**
      * @param \App\Services\Product\Collection\ProductCollection<RawProductDto> $collection

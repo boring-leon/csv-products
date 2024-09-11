@@ -36,7 +36,7 @@ class ProductLoaderService
         $collection = new ProductCollection($reader->getRecords());
 
         if (!$this->validateCollectionDoesntHaveDuplicateProducts($collection)) {
-            throw new InvalidArgumentException('Provided file contains duplicate rows (by product code field)');
+            throw new InvalidArgumentException('Provided file contains duplicate rows. (by product code field)');
         }
 
         return $collection->transformHeadersToSnakeCaseNotation()

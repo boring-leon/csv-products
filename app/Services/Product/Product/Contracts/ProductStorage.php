@@ -12,4 +12,6 @@ interface ProductStorage
      * @return void
      */
     public function insertMany(ProductCollection $collection): void;
+
+    public function getExistingProductCodes(): array;
 }
