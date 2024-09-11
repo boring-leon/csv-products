@@ -22,7 +22,7 @@ class ProductCollectionMapperService
                 description: $rawProduct->getDescriptionField(),
                 stock: (int)$rawProduct->getStockField(),
                 price: (float)$rawProduct->getCostField(),
-                isDiscounted: $rawProduct->getDiscountedField() === 'yes'
+                isDiscontinued: $rawProduct->getDiscontinuedField() === 'yes'
             );
         });
     }

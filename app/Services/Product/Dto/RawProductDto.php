@@ -33,7 +33,7 @@ readonly class RawProductDto
         return $this->getProductField(ProductHeaderEnum::Cost);
     }
 
-    public function getDiscountedField(): ?string
+    public function getDiscontinuedField(): ?string
     {
         return $this->getProductField(ProductHeaderEnum::Discontinued);
     }

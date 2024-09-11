@@ -36,8 +36,8 @@ class ProductValidatorService
         return floatval($rawProduct->getCostField()) > 0;
     }
 
-    public function isDiscountValid(RawProductDto $rawProduct): bool
+    public function isDiscontinuedStatusValid(RawProductDto $rawProduct): bool
     {
-        return in_array($rawProduct->getDiscountedField(), ['yes', 'no']);
+        return in_array($rawProduct->getDiscontinuedField(), ['yes', 'no']);
     }
 }

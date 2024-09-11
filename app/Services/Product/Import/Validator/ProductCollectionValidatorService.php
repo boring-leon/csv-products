@@ -78,7 +78,7 @@ class ProductCollectionValidatorService
             $valid = false;
         }
 
-        if (!$this->productValidatorService->isDiscountValid($rawProduct)) {
+        if (!$this->productValidatorService->isDiscontinuedStatusValid($rawProduct)) {
             $this->pushError($rawProduct, ProductHeaderEnum::Discontinued);
 
             $valid = false;

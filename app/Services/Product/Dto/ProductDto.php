@@ -12,7 +12,7 @@ readonly class ProductDto
         public string $description,
         public int    $stock,
         public int    $price,
-        public bool   $isDiscounted
+        public bool   $isDiscontinued
     ) {}
 
     /**
@@ -30,7 +30,7 @@ readonly class ProductDto
             'decPrice' => $this->price,
             'intStock' => $this->stock,
             'dtmAdded' => $now,
-            'dtmDiscontinued' => $this->isDiscounted ? $now : null
+            'dtmDiscontinued' => $this->isDiscontinued ? $now : null
         ];
     }
 }

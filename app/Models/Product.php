@@ -27,7 +27,7 @@ class Product extends Model
     {
         return [
             'stmTimestamp' => 'datetime',
-            'dtmDiscounted' => 'datetime',
+            'dtmDiscontinued' => 'datetime',
             'dtmAdded' => 'datetime'
         ];
     }
