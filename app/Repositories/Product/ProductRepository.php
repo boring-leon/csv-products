@@ -9,6 +9,11 @@ use App\Services\Product\Product\Contracts\ProductStorage;
 use Illuminate\Database\Connection;
 use Throwable;
 
+/**
+ * Chunk insert is done for performance reasons.
+ * Note - in the future, we should specify row limit for a single csv.
+ * Chunking is a good first step in making import process more scalable, but it is not enough.
+ */
 class ProductRepository implements ProductStorage
 {
     public function __construct(protected Connection $db) {}

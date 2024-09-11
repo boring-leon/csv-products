@@ -4,6 +4,10 @@ namespace App\Services\Product\Import\Validator;
 
 use App\Repositories\Product\Dto\RawProductDto;
 
+/**
+ * Another approach to a validator like this could be to import Laravel ValidatesAttributes trait and use built in methods.
+ * I think that traits tend to "blur" the code and such simple filter are fine with regular PHP.
+ */
 class ProductValidatorService
 {
     public function isCodeValid(RawProductDto $rawProduct): bool

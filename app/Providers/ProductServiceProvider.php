@@ -10,6 +10,12 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Note: in the future it can be a good idea to add something like --disk option for the import command itself.
+ * This would make the command much more flexible, as now disk is defined at config and injected accordingly.
+ * (env PRODUCT_IMPORT_DISK with default local).
+ *
+ */
 class ProductServiceProvider extends ServiceProvider
 {
     /**

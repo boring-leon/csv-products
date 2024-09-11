@@ -10,6 +10,10 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 use InvalidArgumentException;
 use League\Csv\Reader;
 
+/**
+ * Since generic type declarations like Collection<Type> are not supported in PHP (sadly), I use doc blocks
+ * to at least hint what is expected to be inside the collection.
+ */
 class ProductLoaderService
 {
     public function __construct(

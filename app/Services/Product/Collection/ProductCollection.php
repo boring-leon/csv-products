@@ -10,7 +10,7 @@ class ProductCollection extends Collection
     /**
      * This step attempts to minimise typo-related issues while accessing csv columns.
      * A more robust solution would be to define supported columns as PHP enum, and use it everywhere.
-     * In general, I prefer to avoid assoc arrays and have everything typed.
+     * In general, I prefer to avoid data access through assoc arrays and would rather have everything typed.
      */
     public function transformHeadersToSnakeCaseNotation(): static
     {
