@@ -13,7 +13,12 @@ use League\Csv\Reader;
 /**
  * Since generic type declarations like Collection<Type> are not supported in PHP (sadly),
  * I use doc blocks to at least hint what is expected to be inside the collection.
- */
+ * An example -> \App\Services\Product\Collection\ProductCollection<RawProductDto>
+ *
+ * Note - to eliminate potential csv issues we could convert the file to utf-8 using mb_convert_encoding().
+ * To handle different new line characters we could you preg_replace() and an appropriate regex.
+ * As a bonus we could detect csv separator from the first line and check whether only it is used throughout the file.
+ **/
 class ProductLoaderService
 {
     public function __construct(
