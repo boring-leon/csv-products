@@ -2,8 +2,8 @@
 
 namespace App\Services\Product\Product;
 
-use App\Repositories\Product\Dto\ProductDto;
 use App\Services\Product\Collection\ProductCollection;
+use App\Services\Product\Dto\ProductDto;
 use App\Services\Product\Product\Contracts\ProductStorage;
 
 class ProductService
@@ -40,11 +40,11 @@ class ProductService
             return false;
         }
 
-        if ($product->stock < 10 && $product->gbpPrice < 5) {
+        if ($product->stock < 10 && $product->price < 5) {
             return false;
         }
 
-        if ($product->gbpPrice > 1000) {
+        if ($product->price > 1000) {
             return false;
         }
 

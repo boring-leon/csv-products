@@ -2,23 +2,22 @@
 
 namespace App\Services\Product\Import;
 
-use App\Repositories\Product\Dto\RawProductDto;
 use App\Services\Product\Collection\ProductCollection;
+use App\Services\Product\Dto\RawProductDto;
+use App\Services\Product\Enum\ProductHeaderEnum;
 use App\Services\Product\Import\Exception\InvalidCsvHeaderException;
-use Illuminate\Config\Repository;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use InvalidArgumentException;
 use League\Csv\Reader;
 
 /**
- * Since generic type declarations like Collection<Type> are not supported in PHP (sadly), I use doc blocks
- * to at least hint what is expected to be inside the collection.
+ * Since generic type declarations like Collection<Type> are not supported in PHP (sadly),
+ * I use doc blocks to at least hint what is expected to be inside the collection.
  */
 class ProductLoaderService
 {
     public function __construct(
-        protected Filesystem $filesystem,
-        protected Repository $config
+        protected Filesystem $filesystem
     ) {}
 
     /**
@@ -33,7 +32,7 @@ class ProductLoaderService
 
         $reader = Reader::createFromString($csvFileContent)->setHeaderOffset(0);
 
-        if (!$this->validateFileHeaderAgainstConfig($reader)) {
+        if (!$this->validateFileHeader($reader)) {
             throw new InvalidCsvHeaderException('Provided file has invalid headers.');
         }
 
@@ -43,8 +42,7 @@ class ProductLoaderService
             throw new InvalidArgumentException('Provided file contains duplicate rows. (by product code field)');
         }
 
-        return $collection->transformHeadersToSnakeCaseNotation()
-            ->mapInto(RawProductDto::class);
+        return $collection->mapInto(RawProductDto::class);
     }
 
     protected function getFileContent(string $path): string
@@ -62,11 +60,11 @@ class ProductLoaderService
 
     protected function validateCollectionDoesntHaveDuplicateProducts(ProductCollection $collection): bool
     {
-        return $collection->duplicates('Product Code')->filter()->isEmpty();
+        return $collection->duplicates(ProductHeaderEnum::Code->value)->filter()->isEmpty();
     }
 
-    protected function validateFileHeaderAgainstConfig(Reader $reader): bool
+    protected function validateFileHeader(Reader $reader): bool
     {
-        return $reader->getHeader() === $this->config->get('products.file_headers');
+        return empty(array_diff($reader->getHeader(), ProductHeaderEnum::headers()));
     }
 }

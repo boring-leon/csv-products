@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * I think it is only logical to add this constraint as product code looks like a unique supplier-generated ID.
+ * I think it's only logical to add this constraint as product code looks like a unique supplier-generated ID.
  */
 return new class extends Migration
 {

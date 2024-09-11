@@ -2,7 +2,7 @@
 
 namespace App\Services\Product\Import\Validator;
 
-use App\Repositories\Product\Dto\RawProductDto;
+use App\Services\Product\Dto\RawProductDto;
 
 /**
  * Another approach to a validator like this could be to import Laravel ValidatesAttributes trait and use built in methods.
@@ -31,9 +31,9 @@ class ProductValidatorService
             && (int)$rawProduct->getStockField() >= 0;
     }
 
-    public function isPriceValid(RawProductDto $rawProduct): bool
+    public function isCostValid(RawProductDto $rawProduct): bool
     {
-        return floatval($rawProduct->getGbpPriceField()) > 0;
+        return floatval($rawProduct->getCostField()) > 0;
     }
 
     public function isDiscountValid(RawProductDto $rawProduct): bool

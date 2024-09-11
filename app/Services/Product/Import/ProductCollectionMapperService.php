@@ -2,9 +2,9 @@
 
 namespace App\Services\Product\Import;
 
-use App\Repositories\Product\Dto\ProductDto;
-use App\Repositories\Product\Dto\RawProductDto;
 use App\Services\Product\Collection\ProductCollection;
+use App\Services\Product\Dto\ProductDto;
+use App\Services\Product\Dto\RawProductDto;
 
 class ProductCollectionMapperService
 {
@@ -21,7 +21,7 @@ class ProductCollectionMapperService
                 name: $rawProduct->getNameField(),
                 description: $rawProduct->getDescriptionField(),
                 stock: (int)$rawProduct->getStockField(),
-                gbpPrice: (float)$rawProduct->getGbpPriceField(),
+                price: (float)$rawProduct->getCostField(),
                 isDiscounted: $rawProduct->getDiscountedField() === 'yes'
             );
         });

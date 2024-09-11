@@ -3,8 +3,8 @@
 namespace App\Repositories\Product;
 
 use App\Models\Product;
-use App\Repositories\Product\Dto\ProductDto;
 use App\Services\Product\Collection\ProductCollection;
+use App\Services\Product\Dto\ProductDto;
 use App\Services\Product\Product\Contracts\ProductStorage;
 use Illuminate\Database\Connection;
 use Throwable;
@@ -12,7 +12,7 @@ use Throwable;
 /**
  * Chunk insert is done for performance reasons.
  * Note - in the future, we should specify row limit for a single csv.
- * Chunking is a good first step in making import process more scalable, but it is not enough.
+ * Chunking is a good first step in making import process more scalable, but it's not enough.
  */
 class ProductRepository implements ProductStorage
 {

@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * Column names according to convention from raw sql file: type + cammelCaseColumn
- * I personally used snake_case without type prefixing, but I assumed that provided sql establishes
- * a convention that should be followed.
+ * I personally used snake_case without type prefixing.
+ * I assumed that provided sql establishes a convention that should be followed.
  *
  * Note - price field could be an integer, representing price in cents.
  * This would be a bit more complex, requiring code-level conversions (complexity + potential bugs)

@@ -2,8 +2,8 @@
 
 namespace App\Services\Product\Product\Contracts;
 
-use App\Repositories\Product\Dto\ProductDto;
 use App\Services\Product\Collection\ProductCollection;
+use App\Services\Product\Dto\ProductDto;
 
 interface ProductStorage
 {

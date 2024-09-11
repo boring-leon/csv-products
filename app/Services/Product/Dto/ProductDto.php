@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Product\Dto;
+namespace App\Services\Product\Dto;
 
 use Carbon\CarbonImmutable;
 
@@ -11,10 +11,14 @@ readonly class ProductDto
         public string $name,
         public string $description,
         public int    $stock,
-        public int    $gbpPrice,
+        public int    $price,
         public bool   $isDiscounted
     ) {}
 
+    /**
+     * Using immutable datetime is not relevant in this very code,
+     * however I think it's a good practice to use immutable as a default approach wherever possible.
+     */
     public function toArray(): array
     {
         $now = CarbonImmutable::now();
@@ -23,7 +27,7 @@ readonly class ProductDto
             'strProductName' => $this->name,
             'strProductDesc' => $this->description,
             'strProductCode' => $this->code,
-            'decPrice' => $this->gbpPrice,
+            'decPrice' => $this->price,
             'intStock' => $this->stock,
             'dtmAdded' => $now,
             'dtmDiscontinued' => $this->isDiscounted ? $now : null

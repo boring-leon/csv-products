@@ -2,8 +2,9 @@
 
 namespace App\Services\Product\Import\Validator;
 
-use App\Repositories\Product\Dto\RawProductDto;
 use App\Services\Product\Collection\ProductCollection;
+use App\Services\Product\Dto\RawProductDto;
+use App\Services\Product\Enum\ProductHeaderEnum;
 use Illuminate\Support\Collection;
 
 class ProductCollectionValidatorService
@@ -48,37 +49,37 @@ class ProductCollectionValidatorService
         $valid = true;
 
         if (!$this->productValidatorService->isCodeValid($rawProduct)) {
-            $this->pushError($rawProduct, 'product_code');
+            $this->pushError($rawProduct, ProductHeaderEnum::Code);
 
             $valid = false;
         }
 
         if (!$this->productValidatorService->isNameValid($rawProduct)) {
-            $this->pushError($rawProduct, 'product_name');
+            $this->pushError($rawProduct, ProductHeaderEnum::Name);
 
             $valid = false;
         }
 
         if (!$this->productValidatorService->isDescriptionValid($rawProduct)) {
-            $this->pushError($rawProduct, 'product_description');
+            $this->pushError($rawProduct, ProductHeaderEnum::Description);
 
             $valid = false;
         }
 
         if (!$this->productValidatorService->isStockValid($rawProduct)) {
-            $this->pushError($rawProduct, 'stock');
+            $this->pushError($rawProduct, ProductHeaderEnum::Stock);
 
             $valid = false;
         }
 
-        if (!$this->productValidatorService->isPriceValid($rawProduct)) {
-            $this->pushError($rawProduct, 'price');
+        if (!$this->productValidatorService->isCostValid($rawProduct)) {
+            $this->pushError($rawProduct, ProductHeaderEnum::Cost);
 
             $valid = false;
         }
 
         if (!$this->productValidatorService->isDiscountValid($rawProduct)) {
-            $this->pushError($rawProduct, 'discount');
+            $this->pushError($rawProduct, ProductHeaderEnum::Discontinued);
 
             $valid = false;
         }
@@ -91,8 +92,8 @@ class ProductCollectionValidatorService
         $this->messages = [];
     }
 
-    protected function pushError(RawProductDto $rawProduct, string $invalidField): void
+    protected function pushError(RawProductDto $rawProduct, ProductHeaderEnum $invalidField): void
     {
-        $this->messages[$rawProduct->getCodeField()][] = $invalidField;
+        $this->messages[$rawProduct->getCodeField()][] = $invalidField->value;
     }
 }
