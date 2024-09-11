@@ -1,3 +1,5 @@
 *
 !public/
 !.gitignore
+!stock_invalid.csv
+!stock_valid.csv
